@@ -1,5 +1,5 @@
 import {
-  Cartesian2, Cartesian3, Color, CallbackProperty, CallbackPositionProperty, CylinderGraphics, EllipseGraphics,
+  Cartesian2, Cartesian3, Color, CallbackProperty, CallbackPositionProperty, CylinderGraphics, EllipseGraphics, LabelStyle,
   Entity, HeadingPitchRange, Math as CMath, Matrix3, Matrix4, PolygonHierarchy,
   Quaternion, ScreenSpaceEventHandler, ScreenSpaceEventType, Transforms, Viewer, ClockRange,
   Cartographic, ConstantProperty, BoundingSphere, ColorMaterialProperty,
@@ -82,24 +82,24 @@ export function createWindScene(
   viewer.entities.add({
     name: 'Fictional northern Maine wind site',
     polygon: { hierarchy: new PolygonHierarchy(basePolygon), perPositionHeight: true,
-      material: c('#a6bba3'), outline: false },
+      material: c('#779a7f'), outline: false },
   })
   const inner = [localToWorld(0, 0, 0), localToWorld(width, 0, 0),
     localToWorld(width, height, 0), localToWorld(0, height, 0)]
   viewer.entities.add({
     polygon: { hierarchy: new PolygonHierarchy(inner), perPositionHeight: true,
-      material: c('#d5dfcd'), outline: false },
+      material: c('#a7c7ae'), outline: false },
   })
   const border = [...inner, inner[0]]
   viewer.entities.add({ polyline: { positions: border, width: 3,
-    material: c('#4a6b5d', .67) } })
+    material: c('#436754', .85) } })
   for (let x = 0; x <= width; x += 200) {
     viewer.entities.add({ polyline: { positions: [localToWorld(x, 0, 1), localToWorld(x, height, 1)],
-      width: 1, material: c('#65846f', .12) } })
+      width: 1, material: c('#507763', .19) } })
   }
   for (let y = 0; y <= height; y += 200) {
     viewer.entities.add({ polyline: { positions: [localToWorld(0, y, 1), localToWorld(width, y, 1)],
-      width: 1, material: c('#65846f', .12) } })
+      width: 1, material: c('#507763', .19) } })
   }
   // Deterministic vegetation in the outer buffer: no network tiles, no tokens.
   let seed = 41831
@@ -111,7 +111,12 @@ export function createWindScene(
     const r = 5 + rand() * 10
     viewer.entities.add({ position: localToWorld(x, y, 0),
       ellipse: { semiMajorAxis: r, semiMinorAxis: r * (.62 + rand() * .34), height: 0,
-        material: c(rand() < .5 ? '#7f9d7e' : '#93ad88', .84) } })
+        material: c(rand() < .5 ? '#779b7a' : '#89a98a', .84) } })
+    // Small conifers outside the modelled turbine site. Decorative only.
+    const treeHeight = 13 + rand() * 17
+    viewer.entities.add({ position: localToWorld(x, y, treeHeight / 2),
+      cylinder: { length: treeHeight, topRadius: 0, bottomRadius: r * .55,
+        material: c(rand() < .5 ? '#547e61' : '#658b6b') } })
   }
   // Non-quantitative flow guide lines; actual turbine penalties come from FLORIS.
   const flowLines: Entity[] = []
@@ -180,6 +185,20 @@ export function createWindScene(
           material: c('#f2f5f0') }),
       }))
     }
+    each(viewer.entities.add({
+      id: `turbine-${i}-footprint`, name: `Turbine ${i + 1} rotor clearance`,
+      position: new CallbackPositionProperty(() => at(1.2), false),
+      ellipse: { semiMajorAxis: 67, semiMinorAxis: 67, height: 1.2,
+        material: c('#d9f0de', .15), outline: true, outlineColor: c('#4b8968', .44) },
+    }))
+    each(viewer.entities.add({
+      id: `turbine-${i}-tag`, name: `Turbine ${i + 1}`,
+      position: new CallbackPositionProperty(() => at(hubs + 36), false),
+      label: { text: `T${String(i + 1).padStart(2, '0')}`,
+        font: 'bold 13px monospace', style: LabelStyle.FILL_AND_OUTLINE,
+        fillColor: c('#315c4c'), outlineColor: c('#f4fcf5'), outlineWidth: 3,
+        pixelOffset: new Cartesian2(0, -7), disableDepthTestDistance: Number.POSITIVE_INFINITY },
+    }))
     const ring = viewer.entities.add({ position: new CallbackPositionProperty(() => at(2), false),
       ellipse: new EllipseGraphics({ semiMajorAxis: 95, semiMinorAxis: 95, height: 2,
         material: c('#d5f4eb', .15), outline: true, outlineColor: c('#3c7f71', .86),
@@ -209,10 +228,10 @@ export function createWindScene(
 
   const home = () => viewer.camera.flyToBoundingSphere(
     new BoundingSphere(localToWorld(width / 2, height / 2, 10), 1550),
-    { duration: 1.3, offset: new HeadingPitchRange(CMath.toRadians(5), CMath.toRadians(-57), 3950) }
+    { duration: 1.3, offset: new HeadingPitchRange(CMath.toRadians(5), CMath.toRadians(-51), 3650) }
   )
   viewer.camera.lookAt(localToWorld(width / 2, height / 2, 0),
-    new HeadingPitchRange(CMath.toRadians(5), CMath.toRadians(-58), 3950))
+    new HeadingPitchRange(CMath.toRadians(5), CMath.toRadians(-52), 3650))
   viewer.camera.lookAtTransform(Matrix4.IDENTITY)
 
   const tick = () => {
