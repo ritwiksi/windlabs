@@ -1,0 +1,35 @@
+name: Validate WindLab
+on:
+  push:
+    branches: [main, 'feature/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - name: Install physics and test dependencies
+        run: pip install -r backend/requirements-dev.txt
+      - name: Test FastAPI, physics, and optimization
+        env:
+          PYTHONPATH: backend
+        run: pytest -v backend/tests
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install frontend
+        run: npm install --no-audit --no-fund
+      - name: Typecheck and production build
+        run: npm run build
