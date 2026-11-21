@@ -1,6 +1,11 @@
 name: Cache verified ERA5 2025 wind resource
 on:
   workflow_dispatch:
+  push:
+    branches: ['feature/**']
+    paths:
+      - 'scripts/fetch_wind.py'
+      - '.github/workflows/cache-wind.yml'
 permissions:
   contents: write
 jobs:
@@ -8,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { ref: ${{ github.ref_name }} }
+        with:
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
       - name: Fetch complete Northern Maine ERA5 2025 hourly resource

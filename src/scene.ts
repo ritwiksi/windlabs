@@ -1,5 +1,5 @@
 import {
-  Cartesian2, Cartesian3, Color, CallbackProperty, CylinderGraphics, EllipseGraphics,
+  Cartesian2, Cartesian3, Color, CallbackProperty, CallbackPositionProperty, CylinderGraphics, EllipseGraphics,
   Entity, HeadingPitchRange, Math as CMath, Matrix3, Matrix4, PolygonHierarchy,
   Quaternion, ScreenSpaceEventHandler, ScreenSpaceEventType, Transforms, Viewer, ClockRange,
   Cartographic, ConstantProperty, BoundingSphere, ColorMaterialProperty,
@@ -151,18 +151,18 @@ export function createWindScene(
     const each = (item: Entity) => { components.push(item); return item }
     each(viewer.entities.add({
       id: `turbine-${i}-tower`, name: `Turbine ${String(i + 1).padStart(2, '0')}`,
-      position: new CallbackProperty(() => at(hubs / 2), false),
+      position: new CallbackPositionProperty(() => at(hubs / 2), false),
       cylinder: { length: hubs, topRadius: 2.7, bottomRadius: 5.4,
         material: c('#f5f7f3') },
     }))
     each(viewer.entities.add({
       id: `turbine-${i}-nacelle`, name: `Turbine ${i + 1}`,
-      position: new CallbackProperty(() => at(hubs + 4), false),
+      position: new CallbackPositionProperty(() => at(hubs + 4), false),
       box: { dimensions: new Cartesian3(23, 9, 8.5), material: c('#eef3f2') },
     }))
     each(viewer.entities.add({
       id: `turbine-${i}-hub`, name: `Turbine ${i + 1}`,
-      position: new CallbackProperty(() => at(hubs + 4, -14), false),
+      position: new CallbackPositionProperty(() => at(hubs + 4, -14), false),
       ellipsoid: { radii: new Cartesian3(5.5, 5.5, 5.5), material: c('#e8efee') },
     }))
     for (let blade = 0; blade < 3; blade++) {
@@ -170,7 +170,7 @@ export function createWindScene(
       const bladePosition = () => at(hubs + 4 + 31 * Math.cos(angle()), -14, 31 * Math.sin(angle()))
       each(viewer.entities.add({
         id: `turbine-${i}-blade-${blade}`, name: `Turbine ${i + 1}`,
-        position: new CallbackProperty(bladePosition, false),
+        position: new CallbackPositionProperty(bladePosition, false),
         orientation: new CallbackProperty(() => {
           const center = bladePosition()
           return alignedOrientation(center,
@@ -180,7 +180,7 @@ export function createWindScene(
           material: c('#f2f5f0') }),
       }))
     }
-    const ring = viewer.entities.add({ position: new CallbackProperty(() => at(2), false),
+    const ring = viewer.entities.add({ position: new CallbackPositionProperty(() => at(2), false),
       ellipse: new EllipseGraphics({ semiMajorAxis: 95, semiMinorAxis: 95, height: 2,
         material: c('#d5f4eb', .15), outline: true, outlineColor: c('#3c7f71', .86),
         show: new ConstantProperty(false) }),
@@ -189,7 +189,7 @@ export function createWindScene(
     turbines.push(components)
     const wake = viewer.entities.add({
       name: `Wake ${i + 1}`,
-      position: new CallbackProperty(() => {
+      position: new CallbackPositionProperty(() => {
         const theta = windDirection * Math.PI / 180
         return at(hubs + 4, -Math.sin(theta) * 240, -Math.cos(theta) * 240)
       }, false),
