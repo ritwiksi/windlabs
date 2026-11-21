@@ -26,13 +26,13 @@ Open `http://localhost:5173`. To run in Docker with no credentials, use `docker 
 
 ## Important: historical wind data
 
-The committed **initial** wind distribution is clearly marked illustrative/assumed. Do not describe it as observed. Before your presentation run:
+The development branch now contains **cached 2025 ERA5 reanalysis** for the Mars Hill reference coordinates, validated from 8,760 hourly records. To regenerate independently, run:
 
 ```bash
 python scripts/fetch_wind.py
 ```
 
-Then commit the updated `backend/app/wind_rose.json`. Alternatively run the **Cache verified ERA5 2025 wind resource** workflow from GitHub Actions on your project branch; it downloads full-year, hourly Open-Meteo ERA5 reanalysis and commits the binned frequency table. The backend works offline after this step.
+The **Cache verified ERA5 2025 wind resource** GitHub Action also regenerates and commits the wind rose. The backend works offline after this step. Do not interpret the regional ERA5 data as onsite measurements.
 
 * Source: https://open-meteo.com/en/docs/historical-weather-api
 * Reference location: 46.52° N, 67.87° W (Mars Hill, northern Maine; fictional site informed by data from that region)
@@ -82,3 +82,13 @@ GitHub Actions performs both. Tests cover spacing/boundaries, invalid API inputs
 * [NLR FLORIS Jensen input example](https://github.com/NatLabRockies/floris/blob/main/examples/inputs/jensen.yaml) — adapted with attribution.
 * [Open-Meteo historical reanalysis API](https://open-meteo.com/en/docs/historical-weather-api).
 * Reuse direction / concept based on [TempleTwin](https://github.com/ritwiksi/TempleTwin), while avoiding its database/LLM stack.
+
+## Browser integration test
+
+The CI workflow includes a headless Chromium/Playwright test that boots FastAPI and Vite, checks the rendered Cesium scene and FLORIS model values, changes the wind control, and runs optimization. It saves before/after screenshots as the `windlab-browser-smoke` artifact for inspection.
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:e2e
+```

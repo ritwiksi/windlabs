@@ -6,13 +6,13 @@
 - GitHub Actions' first remote FLORIS integration suite passed **12/12** on commit `b6527c0`, including wake direction and constrained optimizer acceptance.
 
 ## Current follow-up
-- The first remote TypeScript build failed on Cesium `CallbackProperty` position types and Vite `ImportMeta.env`; fixed by using `CallbackPositionProperty` and a `vite/client` reference. Changes await next remote CI run.
-- Initial wind cache push workflow had invalid YAML; fixed and configured to fetch 2025 Mars Hill (northern Maine) ERA5 data on this feature-branch push.
-- A running browser and production deployment have **not** been verified.
-- Wind rose is still marked **illustrative** until the wind-cache GitHub Action successfully replaces it.
+- The second remote CI run passed both frontend production build and all 12 FLORIS backend tests.
+- Wind-cache workflow succeeded and committed 8,760 hourly 2025 ERA5 reanalysis records for Mars Hill, Maine on development branch.
+- Browser smoke-test job has been added but has not passed yet. Production deployment remains unverified.
+- Wind rose is now real regional **modeled reanalysis**; it is not onsite measurement data.
 
 ## Remaining validation
-- Confirm second GitHub Actions frontend and backend CI pass.
-- Confirm the cache-wind Action commits a historical wind rose with 8,000+ valid hourly data points and `is_historical: true`.
+- Confirm browser smoke test and screenshots pass.
+- Verify cached ERA5 resource is preserved across future commits and tests.
 - Open a browser to check Cesium rendering, turbine dragging and source attribution.
 - Deploy and smoke-test end-to-end.
