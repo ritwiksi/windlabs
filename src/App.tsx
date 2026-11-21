@@ -200,7 +200,7 @@ export default function App() {
       <div className="right-row"><span>Wind turbines</span><strong>06</strong></div>
       <div className="right-row"><span>Installed capacity</span><strong>30 MW</strong></div>
       <div className="right-row"><span>Minimum spacing</span><strong>{config ? config.site.min_spacing_m : '—'} m</strong></div>
-      <div className="right-row"><span>Wake envelopes</span><button type="button" className="switch" aria-pressed={showWakes} onClick={() => setShowWakes(p => !p)}>{showWakes ? 'ON' : 'OFF'}</button></div>
+      <div className="right-row"><span>Schematic wakes</span><button type="button" className="switch" aria-pressed={showWakes} onClick={() => setShowWakes(p => !p)}>{showWakes ? 'ON' : 'OFF'}</button></div>
       <div className="right-rule"/>
       {selected !== null && metrics?.turbines[selected] ? <div className="selected-card">
         <span className="tiny-label">SELECTED UNIT</span><h3>TURBINE {String(selected + 1).padStart(2, '0')}</h3>
@@ -213,6 +213,6 @@ export default function App() {
       <div><span className="tiny-label">LAYOUT OPTIMIZATION COMPLETE</span><div className="gain">+{fmt(result.improvement_pct, 2)}% <small>estimated AEP</small></div><p>{fmt(result.baseline.aep_mwh, 0)} → {fmt(result.optimized.aep_mwh, 0)} MWh / year</p></div>
       <div className="compare-actions"><button className={!isAfter ? 'active' : ''} onClick={() => viewLayout(false)}>Before</button><button className={isAfter ? 'active' : ''} onClick={() => viewLayout(true)}>After</button></div>
     </div>}
-    <footer className="foot"><div className="source"><span className="source-dot" /> {config?.wind_resource.is_historical ? 'ERA5 HISTORICAL RESOURCE' : 'ILLUSTRATIVE WIND RESOURCE'} &nbsp;·&nbsp; JENSEN / FLORIS</div><div className="foot-right"><span className={`badge-status ${status}`}>{status === 'ready' ? '● MODEL READY' : status === 'error' ? '● OFFLINE' : '◌ CALCULATING'}</span><button type="button" onClick={() => setHint(config?.wind_resource.notice ?? 'Fictional site, steady-state wake physics; preliminary estimates only')}>ⓘ Assumptions</button></div></footer>
+    <footer className="foot"><div className="source"><span className="source-dot" /> {config?.wind_resource.is_historical ? 'ERA5 HISTORICAL RESOURCE' : 'ILLUSTRATIVE WIND RESOURCE'} &nbsp;·&nbsp; JENSEN / FLORIS</div><div className="foot-right"><span className={`badge-status ${status}`}>{status === 'ready' ? '● MODEL READY' : status === 'error' ? '● OFFLINE' : '◌ CALCULATING'}</span><button type="button" onClick={() => setHint((config?.wind_resource.notice ?? 'Fictional site; preliminary estimates only') + ' The 3D wake cones are schematic, not CFD velocity contours.')}>ⓘ Assumptions</button></div></footer>
   </main>
 }

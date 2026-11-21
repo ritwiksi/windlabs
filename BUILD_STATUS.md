@@ -8,7 +8,7 @@
 ## Current follow-up
 - The second remote CI run passed both frontend production build and all 12 FLORIS backend tests.
 - Wind-cache workflow succeeded and committed 8,760 hourly 2025 ERA5 reanalysis records for Mars Hill, Maine on development branch.
-- Browser smoke-test job has been added but has not passed yet. Production deployment remains unverified.
+- Initial browser smoke test found an invalid minor/major vegetation ellipse in Cesium; corrected bounds. Next CI run must verify rendering and optimization. Production deployment remains unverified.
 - Wind rose is now real regional **modeled reanalysis**; it is not onsite measurement data.
 
 ## Remaining validation

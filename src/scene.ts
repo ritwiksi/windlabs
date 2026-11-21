@@ -110,7 +110,7 @@ export function createWindScene(
     if (x > 10 && x < width - 10 && y > 10 && y < height - 10) continue
     const r = 5 + rand() * 10
     viewer.entities.add({ position: localToWorld(x, y, 0),
-      ellipse: { semiMajorAxis: r, semiMinorAxis: r * (.7 + rand() * .5), height: 0,
+      ellipse: { semiMajorAxis: r, semiMinorAxis: r * (.62 + rand() * .34), height: 0,
         material: c(rand() < .5 ? '#7f9d7e' : '#93ad88', .84) } })
   }
   // Non-quantitative flow guide lines; actual turbine penalties come from FLORIS.
@@ -191,15 +191,17 @@ export function createWindScene(
       name: `Wake ${i + 1}`,
       position: new CallbackPositionProperty(() => {
         const theta = windDirection * Math.PI / 180
-        return at(hubs + 4, -Math.sin(theta) * 240, -Math.cos(theta) * 240)
+        return at(hubs + 4, -Math.sin(theta) * 600, -Math.cos(theta) * 600)
       }, false),
       orientation: new CallbackProperty(() => {
         const center = at(hubs + 4)
         const theta = windDirection * Math.PI / 180
         return alignedOrientation(center, new Cartesian3(-Math.sin(theta), -Math.cos(theta), 0))
       }, false),
-      cylinder: { length: 480, topRadius: 110, bottomRadius: 30,
-        material: new ColorMaterialProperty(new CallbackProperty(() => c('#56b7b5', metrics ? .075 + .13 * Math.min(1, metrics.turbines[i].wake_loss_pct / 45) : .10), false)),
+      cylinder: { length: 1200, topRadius: 180, bottomRadius: 35,
+        // Schematic envelope only: opacity does not pretend to be a CFD velocity contour.
+        // Per-turbine wake losses shown in the panel are computed by FLORIS.
+        material: new ColorMaterialProperty(new CallbackProperty(() => c('#56b7b5', metrics ? .11 : .07), false)),
         outline: false },
     })
     wakes.push(wake)
